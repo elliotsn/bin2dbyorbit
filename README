@@ -40,6 +40,6 @@
 
  Dependancies:
        bin2d.m
-       nhoodDensity.m
-       interpWithDensity.m
+       nhooddensity.m
+       interpwithdensity.m
 
