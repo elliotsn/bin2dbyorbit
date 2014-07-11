@@ -1,0 +1,45 @@
+
+ Matlab/GNU Octave functions to bin a list of cartesian data points and 
+ return 2D arrays. Intended for mapping point-based data from instruments
+ aboard spacecraft.
+
+ These functions was written to process point-based (rather than 
+ image-based) spacecraft data obtained by an instrument operating in
+ pushbroom mode. The purpose is to fill in data gaps on gridded data 
+ products where point density is low, but to first create contiguous orbit
+ tracks on the target grid, before stacking those.
+
+ Binning is performed intially within orbit tracks. For output grids with 
+ the suffix 'Interp', Delauney triangulation is used to fill bins between 
+ points in the interior of each orbit track. This minimizes the number of 
+ empty bins the output grids. Grids entitles 'cnt', and 'err' represent
+ the raw, non-interpolated data.
+
+ A point density map on the target grid is calculated for points in each 
+ orbit using the parameter, 'neighbourhood', a positive odd integer
+ describing the length of the square side that defines a neighbourhood on
+ the grid. Typically, 3 <= neighbourhood <= 7 for best results.
+
+ Where there are empty points on the target grid and the density exceeds
+ the density threshold (passed as densityThresh) grid cells are
+ interpolated. 'neighbourhood' and 'densityThresh' should therefore be 
+ tuned according to the expected point density and the resolution of the 
+ target grid.
+ 
+ Usage:
+
+    bin2dbyorbit(x,y,z,xedges,yedges,orbit, neighbourhood, densityThresh)
+
+ Grids produced:
+
+     Interpolated average        (avgInterp)
+     number of points per bin    (cnt)
+     standard deviation per bin  (err)
+     minimum value               (zminInterp)
+     maximum value               (zmaxInterp)
+
+ Dependancies:
+       bin2d.m
+       nhooddensity.m
+       interpwithdensity.m
+
