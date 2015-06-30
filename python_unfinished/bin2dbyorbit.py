@@ -1,3 +1,4 @@
+#!/usr/local/epd/anaconda/bin/python
 # -*- coding: utf-8 -*-
 """
 Created on Thu Jun  5 14:55:23 2014
@@ -158,8 +159,13 @@ def nhood_density(grid, nhood):
 #
 def interpWithDensity(grid,density,density_thresh):
     
+    # Bivariate spline approximation over a rectangular mesh on a sphere.
+    from scipy.spatial import Delauney
+    
+
+
     # NaN any values that are below density_thresh
-    in( density < density_thresh ) = NaN;
+    grid( density < density_thresh ) = NaN;
     
     # Make a tri-scattered interpolant using the non-NaN elements in in.
     indsref = find(~isnan(in));
@@ -220,7 +226,7 @@ def bin2dbyorbit(x,y,z,orbit,xedges,yedges,res,nhood,densitythresh):
         # The density of points only considers that cells are non-zero.
         density = nhood_density(orbcnt, nhood)
 
-        # Fill in this orbit based on a density map       
+        # Fill in this orbit based on a density map.  
         orbavgInterp = interpWithDensity(orbavg, density, densityThresh)
 
         # For the non-interpolated grids
