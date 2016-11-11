@@ -1,3 +1,6 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ bin2dbyorbit.m
 
  Matlab/GNU Octave functions to bin a list of cartesian data points and 
  return 2D arrays. Intended for mapping point-based data from instruments
@@ -27,19 +30,76 @@
  target grid.
  
  Usage:
-
-    bin2dbyorbit(x,y,z,xedges,yedges,orbit, neighbourhood, densityThresh)
+ 
+ [tavgInterp,tcnt,terr,tminInterp,tmaxInterp] = ...
+    bin2dbyorbit(x,y,t,xedges,yedges,orbit, neighbourhood, densityThresh)
 
  Grids produced:
 
-     Interpolated average        (avgInterp)
-     number of points per bin    (cnt)
-     standard deviation per bin  (err)
-     minimum value               (zminInterp)
-     maximum value               (zmaxInterp)
+     Interpolated average        (tavgInterp)
+     number of points per bin    (tcnt)
+     standard deviation per bin  (terr)
+     minimum value               (tminInterp)
+     maximum value               (tmaxInterp)
 
  Dependancies:
        bin2d.m
        nhooddensity.m
        interpwithdensity.m
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+       
+ bin2dwbyorbit.m
+
+ Function to bin variable t, that has weight w, at locations (x, y) onto a 
+ cartesian grid and return 2D arrays of various statistical measures.
+
+ This function was written to process point-based (rather than 
+ image-based) spacecraft data obtained by an instrument operating in
+ pushbroom mode. The purpose is to calculate various quantities for a vector of
+ data points, t, whose  location is defined by 2D coordinates, x,y, and weight,
+ w. 
+ 
+ The weighted mean and error on the weighted mean is first calculated for data 
+ within each orbit track. At this point the routine offers the possibility to
+ 1) Remove disconnected outlying data points that have a low weight from each 
+    orbit track.
+ 2) Interpolate only for areas where data density is sufficient, within each 
+    orbit track.
+ After these steps, orbit tracks are combined to produce a mapped data product.
+
+ For output grids with the suffix 'Interp', Delauney triangulation is used to 
+ fill bins between points in the interior of each orbit track. This minimizes 
+ the number of empty bins the output grids. Grids without 'Interp' in the name
+ represent non-interpolated data.
+
+ To perform this quality control a data density map is calculated. The 
+ parameter, 'neighbourhood', is a positive odd integer describing the length of
+ the square side that defines a neighbourhood on the grid.
+ Typically, 3 <= neighbourhood <= 7 for best results.
+
+ Where there are empty points on the target grid and the observation 
+ density exceeds the density threshold (passed as densityThresh) bins are
+ interpolated. 'neighbourhood' and 'densityThresh' should therefore be 
+ tuned according to the expected point density and the resolution of the 
+ target grid.
+ 
+ Usage:
+ 	
+ [tmeanInterp, tcnt, sumw, terr, tmin, tmax] = ...
+    bin2dwbyorbit(x,y,t,w,xedges,yedges,orbit,neighbourhood,densityThresh)
+ 	
+ 
+ Grids produced:
+
+     Interpolated average        (tmeanInterp)
+     number of points per bin    (tcnt)
+     sum of weight per bin       (tsumw)
+     standard deviation per bin  (terr)
+     minimum value               (tminInterp)
+     maximum value               (tmaxInterp)
+
+ Dependancies:
+       bin2dw.m
+       nhoodDensity.m
+       interpWithDensity.m
